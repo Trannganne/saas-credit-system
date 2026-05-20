@@ -8,7 +8,7 @@ from app.dependencies.feature_check import check_feature_access
 
 router=APIRouter(prefix="/tools", tags=["Features"])
 
-@router.post("/generate-image")
+@router.post("/{feature_name}")
 def use_feature(
     feature_name:str,
     current_user: User=Depends(get_current_user),

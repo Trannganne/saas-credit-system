@@ -4,7 +4,9 @@ from app.schemas.package_schema import PackageOut, PackageCreate,PackageUpdate
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.package import Package
+
 router=APIRouter(prefix="/packages",tags=["Packages"])
+import uuid
 
 # Lấy tất cả packages
 @router.get("/",response_model=List[PackageOut])
@@ -14,9 +16,7 @@ def get_packages(db:Session=Depends(get_db)):
 
 @router.post("/",response_model=PackageOut, status_code=201)
 def create_package(payload: PackageCreate, db:Session=Depends(get_db)):
-    if db.query(Package).filter(Package.id==payload.id).first():
-        raise HTTPException(400,"Mã package đã tồn tại!")
-    package=Package(**payload.model_dump())
+    package=Package(id=str(uuid.uuid4()),**payload.model_dump())
     db.add(package)
     db.commit()
     db.refresh(package)
