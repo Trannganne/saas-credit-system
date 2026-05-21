@@ -8,5 +8,6 @@ class Feature(Base):
     id = Column(String, primary_key=True, index=True)
     name = Column(String, index=True)
     description = Column(String)
+    cost= Column(Integer, default=1)
 
-    package_features=relationship("PackageFeature",back_populates="feature")
+    package_features=relationship("PackageFeature",back_populates="feature", cascade="all, delete-orphan")

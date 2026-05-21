@@ -8,21 +8,13 @@ from app.models.user_credits import UserCredits
 from sqlalchemy.orm import Session
 from app.database import get_db
 import uuid
+from app.dependencies.auth import get_current_user
 
 router=APIRouter(prefix="/purchase", tags=["Purchase"])
 
 @router.post("/",response_model=TransactionOut, status_code=201)
-def create_purchase(payload:TransactionCreate, db:Session=Depends(get_db)):
-    if(db.query(Transaction).filter(Transaction.id==payload.id).first()):
-        raise HTTPException(404, "Mã giao dịch đã tồn tại!")
-    
-    user=db.query(User).filter(User.id==payload.user_id).first()
-
-    # Kiểm tra user
-    if not user:
-        raise HTTPException(404, "User không hợp lệ!")
-    
-
+def create_purchase(payload:TransactionCreate, current_user:User=Depends(get_current_user) ,db:Session=Depends(get_db)):
+   
     # Kiểm tra package
     package=db.query(Package).filter(Package.id==payload.package_id).first()
 
@@ -31,21 +23,21 @@ def create_purchase(payload:TransactionCreate, db:Session=Depends(get_db)):
 
     # Tạo transaction
     transaction=Transaction(
-        id=payload.id,
-        user_id=user.id,
+        id=str(uuid.uuid4()),
+        user_id=current_user.id,
         package_id=package.id,
-        amount= payload.amount,
-        credits_added=package.credits_added,
+        amount= package.price,
+        credits_added=package.credits,
 
         status="success",       
     )
     db.add(transaction)
 
     # Cộng credits vào tài khoản user
-    user_credits=db.query(UserCredits).filter(UserCredits.user_id==user.id).first()
+    user_credits=db.query(UserCredits).filter(UserCredits.user_id==current_user.id).first()
 
     if not user_credits:
-        user_credits=UserCredits(id=str(uuid.uuid4()),user_id=user.id,balance=0)
+        user_credits=UserCredits(id=str(uuid.uuid4()),user_id=current_user.id,balance=0)
         db.add(user_credits)
 
     user_credits.balance+=package.credits

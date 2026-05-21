@@ -3,6 +3,7 @@ from app.models.user import User
 from app.models.transaction import Transaction
 from app.models.feature import Feature
 from app.models.package_features import PackageFeature
+from app.models.user_credits import UserCredits
 from app.database import get_db
 from app.dependencies.auth import get_current_user
 from sqlalchemy.orm import Session
@@ -20,7 +21,7 @@ def check_feature_access(feature_name:str,
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Bạn chưa mua gói nào!")
         
-    package_ids=[t.package_id for t in transactions]
+    package_ids=list(set(t.package_id for t in transactions))
 
         # Tìm feature theo tên
     feature=db.query(Feature).filter(Feature.name==feature_name).first()
@@ -38,7 +39,15 @@ def check_feature_access(feature_name:str,
     if not has_access:
         raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Gói của bạn không có quyền dùng tình năng {feature_name}")
-        
+                detail=f"Gói của bạn không có quyền dùng tính năng {feature_name}! Vui lòng nâng cấp gói!")
+    
+    user_access=db.query(UserCredits).filter(UserCredits.user_id==current_user.id).first()
+
+    if not user_access or user_access.balance< feature.cost:
+         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"Bạn không đủ {feature.cost} credits để dùng tính năng này! Vui lòng mua thêm gói!")
+    
+    user_access.balance-=feature.cost
+    db.commit()
+         
     return current_user # Trả về user nếu có quyền
     

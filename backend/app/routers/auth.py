@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
 from app.schemas.user_schema import UserOut, UserCreate, Token, LoginRequest
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
@@ -18,10 +19,30 @@ def register(payload: UserCreate, db:Session=Depends(get_db)):
     db.refresh(user)
     return user
 
+
 @router.post("/login", response_model=Token)
-def login(payload:LoginRequest, db:Session=Depends(get_db)):
-    user=db.query(User).filter(User.email==payload.email).first()
-    if not user or not verify_password(payload.password, user.hashed_password):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Email hoặc mật khẩu không đúng")
-    token=create_access_token({"sub": user.email})
-    return {"access_token": token, "token_type": "bearer"}
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+
+    # OAuth2PasswordRequestForm dùng username
+    user = db.query(User).filter(
+        User.email == form_data.username
+    ).first()
+
+    if not user or not verify_password(
+        form_data.password,
+        user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Email hoặc mật khẩu không đúng"
+        )
+
+    token = create_access_token({"sub": user.email})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }

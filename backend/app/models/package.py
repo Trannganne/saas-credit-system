@@ -14,5 +14,5 @@ class Package(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    transactions=relationship("Transaction",back_populates="package")
-    package_features=relationship("PackageFeature", back_populates="package")
+    transactions=relationship("Transaction",back_populates="package", cascade="all, delete-orphan")
+    package_features=relationship("PackageFeature", back_populates="package", cascade="all, delete-orphan")

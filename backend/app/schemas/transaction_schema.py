@@ -5,10 +5,7 @@ from app.schemas.package_schema import PackageOut
 from app.schemas.user_schema import UserOut
 
 class TransactionCreate(BaseModel):
-    id:str
-    user_id:str
     package_id:str
-    amount:int
   
 
 class TransactionOut(BaseModel):
@@ -21,5 +18,8 @@ class TransactionOut(BaseModel):
     status: str
     created_at: datetime
 
+    # user:Optional[UserOut]=None
+    # package:Optinal[PackageOut]=None
+
     class Config:
-        orm_mode = True
+        from_attributes = True
