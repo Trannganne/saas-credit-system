@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Định nghĩa lại các biến màu sắc tùy biến của bạn */
+:root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #ffffff;
+  --border: #e5e4e7;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font: 16px/145% var(--sans);
+}
+
+/* Đảm bảo toàn bộ body bao phủ hết màn hình và có nền sáng sủa */
+body {
+  margin: 0;
+  background-color: #f8fafc;
+  /* Màu nền xám nhạt cao cấp */
+  color: var(--text);
+}
+
+/* Sửa lỗi #root cũ ép khung hình */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
