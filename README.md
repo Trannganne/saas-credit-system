@@ -55,7 +55,7 @@ docker-compose up --build
 
 ---
 
-## Dữ liệu mẫu ( thuận tiện cho nhà tuyển dụng test)
+## Dữ liệu mẫu (thuận tiện cho nhà tuyển dụng test)
 
 Khi backend khởi động lần đầu, hệ thống **tự động seed** dữ liệu gồm:
 
@@ -65,10 +65,12 @@ Khi backend khởi động lần đầu, hệ thống **tự động seed** dữ
 |---|---|---|---|
 | Free | 10 | 0$ | Basic AI Chat |
 | Starter | 100 | 9.99$ | Basic AI Chat · PDF Export · Content Scheduler |
-| Pro | 500 | 29.99$ | AI Image Generation · Auto Social Posting |
-| Enterprise | 5000 | 99.99$ | Developer API Access |
+| Pro | 500 | 29.99$ | Basic AI Chat · PDF Export · Content Scheduler · AI Image Generation · Auto Social Posting |
+| Enterprise | 5000 | 99.99$ | Basic AI Chat · PDF Export · Content Scheduler · AI Image Generation · Auto Social Posting · Developer API Access · Team Workspace · Advanced Analytics |
 
 **10 tính năng:** Basic AI Chat, AI Image Generation, Auto Social Posting, Content Scheduler, PDF Export, Email Campaign, Advanced Analytics, Developer API Access, Team Workspace, Priority Support.
+
+> Gói cao hơn bao gồm toàn bộ tính năng của gói thấp hơn cộng thêm tính năng mới.
 
 ---
 
