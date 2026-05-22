@@ -1,14 +1,30 @@
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 export default function PackagesPage() {
     const [packages, setPackages] = useState([]);
+    const [features, setFeatures] = useState([]);
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
-        api.get("/packages").then((res) => setPackages(res.data));
+        api.get("/packages").then(async (res) => {
+            const pkgs = res.data;
+
+            // Fetch features cho từng package song song
+            const pkgWithFeatures = await Promise.all(
+                pkgs.map(async (pkg) => {
+                    const featRes = await api.get(`/packages/${pkg.id}/features`);
+                    return { ...pkg, features: featRes.data };
+                })
+            );
+
+            console.log(pkgWithFeatures);
+            setPackages(pkgWithFeatures);
+
+
+        });
     }, []);
 
     const handleBuy = async (packageId) => {
@@ -18,6 +34,9 @@ export default function PackagesPage() {
             setTimeout(() =>
                 navigate("/dashboard")
                 , 1500);
+
+            await api.get("/{package_id}/features", { package_id: packageId });
+
         } catch (e) {
             setMessage(e.response?.data?.detail || "Mua thất bại!");
 
@@ -67,7 +86,7 @@ export default function PackagesPage() {
                     </div>
                 )}
                 {/* Pricing grid layout Tự động co giãn */}
-                <div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
                     {packages.map((pkg) => {
                         const isPopular = pkg.credits >= 500;
 
@@ -91,6 +110,33 @@ export default function PackagesPage() {
                                     <p className="text-sm text-slate-500 font-medium leading-relaxed min-h-[40px] mb-6">
                                         {pkg.description || "Không có mô tả cho gói này."}
                                     </p>
+
+                                    {/* Tính năng đi kèm */}
+                                    <div className="mb-6 space-y-3 text-left border border-t border-slate-100 pt-4 flex-1 p-3">
+                                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                            Features:
+                                        </p>
+                                        {pkg.features && pkg.features.length > 0 ? (
+                                            <div className="flex flex-col gap-2.5">
+                                                {(pkg.features || []).map((f) => (
+                                                    <div key={f.id} className="flex items-start gap-2.5 text-sm font-medium text-slate-700">
+                                                        <span className="flex-shrink-0 w-4 h-4 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center text-[10px] font-bold mt-0.5">
+                                                            ✓
+                                                        </span>
+                                                        <span className="leading-tight">
+                                                            {f.description || f.name}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-xs italic text-slate-400">
+                                                Không có tính năng đi kèm!
+                                            </p>
+                                        )}
+                                    </div>
+
+
                                     {/*Số credits*/}
                                     <div className="flex items-baseline gap-1.5 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                                         <span className="text-3xl font-black  text-slate-900 tracking-tight">
@@ -107,10 +153,10 @@ export default function PackagesPage() {
                                     {/*Hiển thị giá tiền */}
                                     <div className="flex justify-between items-center pt-2 border-t border-slate-100">
                                         <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                            Giá thanh toán
+                                            Price
                                         </span>
                                         <span className="text-2xl font-extrabold text-indigo-600">
-                                            {pkg.price.toLocaleString()}đ
+                                            {pkg.price.toLocaleString()}$
                                         </span>
                                     </div>
                                     {/*Nút mua */}
@@ -119,7 +165,7 @@ export default function PackagesPage() {
                                             ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-600/10"
                                             : "bg-slate-900 text-white hover:bg-slate-800"
                                             }`}>
-                                        Mua gói ngay
+                                        Buy Now
                                         <svg className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                         </svg>

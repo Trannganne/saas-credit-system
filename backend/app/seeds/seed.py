@@ -100,48 +100,31 @@ PACKAGES = [
 ]
 
 # Dữ liệu gán Feature cho Package
-PACKAGE_FEATURES=[
-    PackageFeature(
-        id="pf1",
-        package_id="pkg_free",
-        feature_id="f_basic_chat"
-    ),
+PACKAGE_FEATURES = [
+    # Free
+    PackageFeature(id="pf1", package_id="pkg_free", feature_id="f_basic_chat"),
 
-    PackageFeature(
-        id="pf2",
-        package_id="pkg_starter",
-        feature_id="f_basic_chat"
-    ),
+    # Starter = Free + thêm
+    PackageFeature(id="pf2", package_id="pkg_starter", feature_id="f_basic_chat"),
+    PackageFeature(id="pf3", package_id="pkg_starter", feature_id="f_pdf_export"),
+    PackageFeature(id="pf4", package_id="pkg_starter", feature_id="f_content_scheduler"),
 
-    PackageFeature(
-        id="pf3",
-        package_id="pkg_starter",
-        feature_id="f_pdf_export"
-    ),
+    # Pro = Starter + thêm
+    PackageFeature(id="pf5", package_id="pkg_pro", feature_id="f_basic_chat"),
+    PackageFeature(id="pf6", package_id="pkg_pro", feature_id="f_pdf_export"),
+    PackageFeature(id="pf7", package_id="pkg_pro", feature_id="f_content_scheduler"),
+    PackageFeature(id="pf8", package_id="pkg_pro", feature_id="f_ai_image"),
+    PackageFeature(id="pf9", package_id="pkg_pro", feature_id="f_auto_post"),
 
-    PackageFeature(
-        id="pf4",
-        package_id="pkg_starter",
-        feature_id="f_content_scheduler"
-    ),
-
-    PackageFeature(
-        id="pf5",
-        package_id="pkg_pro",
-        feature_id="f_ai_image"
-    ),
-
-    PackageFeature(
-        id="pf6",
-        package_id="pkg_pro",
-        feature_id="f_auto_post"
-    ),
-
-    PackageFeature(
-        id="pf7",
-        package_id="pkg_enterprise",
-        feature_id="f_api_access"
-    ),
+    # Enterprise = Pro + thêm
+    PackageFeature(id="pf10", package_id="pkg_enterprise", feature_id="f_basic_chat"),
+    PackageFeature(id="pf11", package_id="pkg_enterprise", feature_id="f_pdf_export"),
+    PackageFeature(id="pf12", package_id="pkg_enterprise", feature_id="f_content_scheduler"),
+    PackageFeature(id="pf13", package_id="pkg_enterprise", feature_id="f_ai_image"),
+    PackageFeature(id="pf14", package_id="pkg_enterprise", feature_id="f_auto_post"),
+    PackageFeature(id="pf15", package_id="pkg_enterprise", feature_id="f_api_access"),
+    PackageFeature(id="pf16", package_id="pkg_enterprise", feature_id="f_team_workspace"),
+    PackageFeature(id="pf17", package_id="pkg_enterprise", feature_id="f_analytics"),
 ]
 
 def seed_data():
