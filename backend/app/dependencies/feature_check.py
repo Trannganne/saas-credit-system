@@ -11,43 +11,43 @@ from sqlalchemy.orm import Session
 def check_feature_access(feature_name:str,
                     current_user:User=Depends(get_current_user),
                     db:Session=Depends(get_db)):
-    """Dùng như dependencies trong router"""
-    transactions=db.query(Transaction).filter(
-            Transaction.user_id==current_user.id, 
-            Transaction.status=="success").all()
-        
-    if not transactions:
-        raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Bạn chưa mua gói nào!")
-        
-    package_ids=list(set(t.package_id for t in transactions))
+        """Dùng như dependencies trong router"""
+        transactions=db.query(Transaction).filter(
+                Transaction.user_id==current_user.id, 
+                Transaction.status=="success").all()
+                
+        if not transactions:
+                raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Bạn chưa mua gói nào!")
+                
+        package_ids=list(set(t.package_id for t in transactions))
 
-        # Tìm feature theo tên
-    feature=db.query(Feature).filter(Feature.name==feature_name).first()
+                # Tìm feature theo tên
+        feature=db.query(Feature).filter(Feature.name==feature_name).first()
 
-    if not feature:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Tính năng {feature_name} không tồn tại!")
+        if not feature:
+                raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail=f"Tính năng {feature_name} không tồn tại!")
+                
+                # Kiểm tra feature có thuộc package mà user đã mua không
+        has_access=db.query(PackageFeature).filter(
+                PackageFeature.package_id.in_(package_ids),
+                PackageFeature.feature_id==feature.id).first()
+                
+        if not has_access:
+                raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail=f"Gói của bạn không có quyền dùng tính năng {feature_name}! Vui lòng nâng cấp gói!")
         
-        # Kiểm tra feature có thuộc package mà user đã mua không
-    has_access=db.query(PackageFeature).filter(
-            PackageFeature.package_id.in_(package_ids),
-            PackageFeature.feature_id==feature.id).first()
-        
-    if not has_access:
-        raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Gói của bạn không có quyền dùng tính năng {feature_name}! Vui lòng nâng cấp gói!")
-    
-    user_access=db.query(UserCredits).filter(UserCredits.user_id==current_user.id).first()
+        user_access=db.query(UserCredits).filter(UserCredits.user_id==current_user.id).first()
 
-    if not user_access or user_access.balance< feature.cost:
-         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"Bạn không đủ {feature.cost} credits để dùng tính năng này! Vui lòng mua thêm gói!")
-    
-    user_access.balance-=feature.cost
-    db.commit()
-         
-    return current_user # Trả về user nếu có quyền
-    
+        if not user_access or user_access.balance< feature.cost:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"Bạn không đủ {feature.cost} credits để dùng tính năng này! Vui lòng mua thêm gói!")
+        
+        user_access.balance-=feature.cost
+        db.commit()
+                
+        return current_user # Trả về user nếu có quyền
+        

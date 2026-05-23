@@ -5,7 +5,7 @@ import api from "../api/axios";
 export default function RegisterPage() {
     const [form, setForm] = useState({ full_name: "", email: "", password: "" });
     const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(false); // Bổ sung trạng thái loading cho nút bấm chuyên nghiệp hơn
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -20,7 +20,6 @@ export default function RegisterPage() {
             await api.post("/auth/register", form);
             navigate("/login");
         } catch (e) {
-            // Sửa lại print(e) của Python thành console.error(e) chuẩn JavaScript
             console.error(e);
             setError(e.response?.data?.detail || "Đăng ký thất bại. Vui lòng thử lại.");
         } finally {

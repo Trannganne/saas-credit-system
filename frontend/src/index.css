@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Định nghĩa lại các biến màu sắc tùy biến của bạn */
+/* Định nghĩa lại các biến màu sắc */
 :root {
   --text: #6b6375;
   --text-h: #08060d;

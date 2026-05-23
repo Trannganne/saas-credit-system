@@ -15,8 +15,7 @@ export default function DashboardPage() {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
-    // 1. Ánh xạ giao diện (UI Mapping): Chỉ dùng để bù đắp Icon/Emoji cho đẹp mắt 
-    // Dựa theo chính xác trường "name" trong file seed.py của bạn
+    // Icon/Emoji
     const featureUIMapping = {
         "create_image": { icon: "🎨" },
         "auto_post": { icon: "🚀" },
@@ -138,15 +137,15 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Status Dynamic Feedback Toast Alerts */}
+                {/* Thông báo trạng thái động bằng toast để phản hồi cho người dùng */}
                 {error && (
                     <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-sm font-semibold flex items-center gap-2 animate-fadeIn">
-                        ❌ {error}
+                        {error}
                     </div>
                 )}
                 {successMessage && (
                     <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm font-semibold flex items-center gap-2 animate-fadeIn">
-                        ✅ {successMessage}
+                        {successMessage}
                     </div>
                 )}
 
@@ -217,7 +216,7 @@ export default function DashboardPage() {
                     )}
                 </div>
 
-                {/* History Transactions List */}
+                {/* Lịch sử giao dịch */}
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden">
                     <div className="px-6 py-5 border-b border-slate-100">
                         <h3 className="text-lg font-bold text-slate-900">Lịch sử mua credits</h3>

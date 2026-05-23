@@ -150,3 +150,4 @@ docker-compose down -v
 ![Dashboard](./screenshots/dashboard.png)
 ![Dashboard](./screenshots/unlocked_feature.png)
 ![Packages](./screenshots/transaction_history.png)
+![Swagger](./screenshots/swagger.png)
